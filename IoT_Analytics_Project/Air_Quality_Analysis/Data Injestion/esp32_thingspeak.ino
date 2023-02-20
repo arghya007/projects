@@ -7,15 +7,13 @@
 String hostname = "ESP32.MO135";
 
 // Network Credentials
-//const char* ssid = "Aarusha301";
-//const char* pass = "ahpl@301";
 
-const char* ssid = "sOuLkEePeR";
-const char* pass = "asdf1234";
+const char* ssid = <wifi id>;
+const char* pass = <wifi password>;
 
 // Thingspeak channel details
-unsigned long myChannelNumber = 2034104;
-const char * myWriteAPIKey = "27P7TSLJU50ZQFMS";
+unsigned long myChannelNumber = <channel number>;
+const char * myWriteAPIKey = <write API Key>;
 
 //Definitions
 #define placa "ESP-32"
