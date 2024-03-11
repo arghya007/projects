@@ -16,7 +16,6 @@ from langchain.chains.conversation.memory import ConversationBufferWindowMemory
 from langchain_groq import ChatGroq
 from langchain.prompts import PromptTemplate
 from dotenv import load_dotenv
-
 load_dotenv()
 
 api_key = os.environ['GROQ_API_KEY']                                                       # Retriving API Key from environment file
@@ -57,12 +56,13 @@ def main():
             llm=groq_chat,
             memory=memory                                                                  # Initializing the conversation chain  
     )
-
-    if user_question:
-        response = conversation(user_question)                                             # Generating response for User's Question
-        message = {'human':user_question,'AI':response['response']}                         
-        st.session_state.chat_history.append(message)                                      # Appending the QnA to chat history
-        st.write("Chatbot:", response['response'])                                         # Writing back the response in Front End
+    if st.button("Submit & Process"):
+        if user_question:
+            with st.spinner("Processing..."):
+                response = conversation(user_question)                                             # Generating response for User's Question
+                message = {'human':user_question,'AI':response['response']}                         
+                st.session_state.chat_history.append(message)                                      # Appending the QnA to chat history
+                st.write("Chatbot:", response['response'])                                         # Writing back the response in Front End
 
 if __name__ == "__main__":
     main()
