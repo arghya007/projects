@@ -1,0 +1,13 @@
+prefix=D:/Workspace/Github/datascience/public_projects/projects/chat_bot/conversational_chat_bot/venv/Library
+exec_prefix=D:/Workspace/Github/datascience/public_projects/projects/chat_bot/conversational_chat_bot/venv/Library
+libdir=D:/Workspace/Github/datascience/public_projects/projects/chat_bot/conversational_chat_bot/venv/Library/lib
+sharedlibdir=D:/Workspace/Github/datascience/public_projects/projects/chat_bot/conversational_chat_bot/venv/Library/lib
+includedir=D:/Workspace/Github/datascience/public_projects/projects/chat_bot/conversational_chat_bot/venv/Library/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.13
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}
