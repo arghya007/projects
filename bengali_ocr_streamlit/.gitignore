@@ -16,5 +16,3 @@ venv/
 # System files
 .DS_Store
 Thumbs.db
-
-mongo_connect.ipynb

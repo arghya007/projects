@@ -14,17 +14,26 @@ import traceback
 DATABASE_NAME = "bengali_ocr_db"
 COLLECTION_NAME = "documents"
 
-if os.name == 'nt':  # Windows
-    POPPLER_PATH = r"C:\Program Files\poppler-24.08.0\Library\bin"  # Adjust to your actual Poppler path
-    TESSERACT_CMD = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-    pytesseract.pytesseract.tesseract_cmd = TESSERACT_CMD
-    # Check if paths exist
-    if not os.path.exists(TESSERACT_CMD):
-        st.warning(f"Tesseract not found at {TESSERACT_CMD}. Please update the path.")
-    if not os.path.exists(POPPLER_PATH):
-        st.warning(f"Poppler not found at {POPPLER_PATH}. Please update the path.")
-else:
-    POPPLER_PATH = None  # Rely on PATH in Linux (Streamlit Cloud)
+# Linux (Streamlit Cloud) configuration
+POPPLER_PATH = "/usr/bin"
+# Debug: Show PATH and /usr/bin contents 
+st.write("Current PATH:", os.environ.get('PATH', ''))
+try:
+    bin_contents = os.listdir('/usr/bin')
+    st.write("Listing /usr/bin contents (first 10 files):", bin_contents[:10])
+    st.write("'pdfinfo' in /usr/bin:", 'pdfinfo' in bin_contents)
+    st.write("'tesseract' in /usr/bin:", 'tesseract' in bin_contents)
+except Exception as e:
+    st.warning(f"Failed to list /usr/bin contents: {str(e)}")
+# Check if tesseract and pdfinfo are in /usr/bin
+tesseract_path = os.path.join('/usr/bin', 'tesseract')
+pdfinfo_path = os.path.join('/usr/bin', 'pdfinfo')
+if not os.path.exists(tesseract_path):
+    st.warning(f"Tesseract not found at {tesseract_path}. Ensure 'tesseract-ocr' is in packages.txt")
+if not os.path.exists(pdfinfo_path):
+    st.warning(f"pdfinfo not found at {pdfinfo_path}. Ensure 'poppler-utils' is in packages.txt")
+# Warn about inotify limit
+st.warning("If app fails to load, check logs for 'inotify watch limit reached'. Minimize repository files or contact Streamlit support.")
 
 MONGO_URI = st.secrets["MONGO_URI"]
 MAX_FILE_SIZE = 200 * 1024 * 1024  # 200MB limit
@@ -59,19 +68,12 @@ def get_mongo_client():
 def process_pdf_to_images(file_bytes):
     try:
         from pdf2image import convert_from_bytes
-        if POPPLER_PATH:
-            return convert_from_bytes(
-                file_bytes,
-                poppler_path=POPPLER_PATH,
-                fmt='jpeg',
-                dpi=300
-            ) or []
-        else:
-            return convert_from_bytes(
-                file_bytes,
-                fmt='jpeg',
-                dpi=300
-            ) or []
+        return convert_from_bytes(
+            file_bytes,
+            poppler_path=POPPLER_PATH,
+            fmt='jpeg',
+            dpi=300
+        ) or []
     except Exception as e:
         handle_error(e, "PDF processing failed")
         return []
@@ -186,7 +188,7 @@ def handle_file_upload(file, name, author):
             "metadata": {
                 "name": name,
                 "author": author or "Unknown",
-                "upload_date": datetime.datetime.utcnow()
+                "upload_date": datetime.datetime.now(datetime.UTC)
             },
             "file_data": {
                 "file_name": file.name,
@@ -339,7 +341,7 @@ def handle_save():
             "page_number": i+1,
             "extracted_text": st.session_state.extracted_texts[i],
             "corrected_text": st.session_state.corrected_texts[i],
-            "last_updated": datetime.datetime.utcnow()
+            "last_updated": datetime.datetime.now(datetime.UTC)
         } for i in range(len(st.session_state.extracted_texts))]
 
         result = db[COLLECTION_NAME].update_one(
