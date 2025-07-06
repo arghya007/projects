@@ -1,6 +1,7 @@
 streamlit
-python-dotenv
-google-generativeai
-python-dotenv
+groq
+keras
 langchain
-langchain_google_genai
+langchain_groq
+python-dotenv
+chainlit

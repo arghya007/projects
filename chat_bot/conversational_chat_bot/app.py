@@ -1,11 +1,3 @@
-# *** Installing Necessary Libraries ***
-# !pip install streamlit
-# !pip install groq
-# !pip install keras
-# !pip install langchain
-# !pip install langchain_groq
-# !pip install dotenv
-
 # *** Importing Necessary Packages ***
 import streamlit as st
 import os
