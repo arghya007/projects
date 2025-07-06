@@ -110,11 +110,13 @@ def perform_ocr(image, lang='ben'):
 
 # ========== Main UI ==========
 def main_ui():
-    st.write("Current working directory:", os.getcwd())  # Debug line to check working directory
     st.title("📜 Bengali Document OCR System")
     
-    # Set background image using base64 encoding
-    bg_image_path = "assets/bg.jpg"
+    # Get the directory of the current script
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    # Construct the path to the background image
+    bg_image_path = os.path.join(script_dir, "assets", "bg.jpg")
+    
     if os.path.exists(bg_image_path):
         background_image = get_base64_of_image(bg_image_path)
         if background_image:
@@ -127,7 +129,7 @@ def main_ui():
             </style>
             """, unsafe_allow_html=True)
     else:
-        st.warning("Background image not found at assets/bg.jpg")
+        st.warning(f"Background image not found at {bg_image_path}")
     
     st.markdown("""
     **Upload documents, extract Bengali text, and save corrections to the database**
@@ -288,7 +290,7 @@ def display_navigation():
     with cols[1]:
         st.markdown(f"**Page {current_page + 1} of {total_pages}**")
     with cols[2]:
-        if st.button("Next ▶", disabled=current_page >= total_page - 1):
+        if st.button("Next ▶", disabled=current_page >= total_pages - 1):
             st.session_state.current_page = min(total_pages - 1, current_page + 1)
             st.rerun()
 
