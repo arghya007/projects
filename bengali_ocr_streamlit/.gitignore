@@ -6,9 +6,6 @@
 __pycache__/
 *.pyc
 
-# Virtual environment
-venv/
-
 # IDE files
 .vscode/
 .idea/

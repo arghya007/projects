@@ -27,6 +27,15 @@ if not os.path.exists(pdfinfo_path):
 MONGO_URI = st.secrets["MONGO_URI"]
 MAX_FILE_SIZE = 200 * 1024 * 1024  # 200MB limit
 
+# ========== Helper Function for Background Image ==========
+def get_base64_of_image(image_path):
+    try:
+        with open(image_path, "rb") as image_file:
+            return base64.b64encode(image_file.read()).decode()
+    except Exception as e:
+        st.warning(f"Failed to load background image: {str(e)}")
+        return None
+
 # ========== Error Handling ==========
 def handle_error(e, message="An error occurred"):
     st.error(f"🚨 {message}: {str(e)}")
@@ -102,15 +111,22 @@ def perform_ocr(image, lang='ben'):
 # ========== Main UI ==========
 def main_ui():
     st.title("📜 Bengali Document OCR System")
-    # Add background image
-    st.markdown("""
-    <style>
-    .stApp {
-        background-image: url("assets/bg.jpg");
-        background-size: cover;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+    
+    # Set background image using base64 encoding
+    bg_image_path = "assets/bg.jpg"
+    if os.path.exists(bg_image_path):
+        background_image = get_base64_of_image(bg_image_path)
+        if background_image:
+            st.markdown(f"""
+            <style>
+            .stApp {{
+                background-image: url("data:image/jpg;base64,{background_image}");
+                background-size: cover;
+            }}
+            </style>
+            """, unsafe_allow_html=True)
+    else:
+        st.warning("Background image not found at assets/bg.jpg")
     
     st.markdown("""
     **Upload documents, extract Bengali text, and save corrections to the database**
