@@ -238,7 +238,7 @@ def process_file_content(file_bytes, file_type):
         st.session_state.processed_images = images
         st.session_state.extracted_texts = [''] * len(images)
         st.session_state.corrected_texts = [''] * len(images)
-        st.experimental_rerun()  # Refresh UI to show document
+        st.rerun()  # Updated from experimental_rerun to rerun
     except Exception as e:
         handle_error(e, "File processing failed")
 
@@ -268,13 +268,13 @@ def display_navigation():
     with cols[0]:
         if st.button("◀ Previous", disabled=current_page == 0):
             st.session_state.current_page = max(0, current_page - 1)
-            st.experimental_rerun()
+            st.rerun()  # Updated from experimental_rerun to rerun
     with cols[1]:
         st.markdown(f"**Page {current_page + 1} of {total_pages}**")
     with cols[2]:
         if st.button("Next ▶", disabled=current_page >= total_pages - 1):
             st.session_state.current_page = min(total_pages - 1, current_page + 1)
-            st.experimental_rerun()
+            st.rerun()  # Updated from experimental_rerun to rerun
 
 def display_image():
     try:
