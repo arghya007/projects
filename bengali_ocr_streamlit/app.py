@@ -110,7 +110,7 @@ def perform_ocr(image, lang='ben'):
 
 # ========== Main UI ==========
 def main_ui():
-    st.title("📜 Bengali Document OCR System")
+    st.title("📜 মুদ্রাক্ষর 📜")
     
     # Get the directory of the current script
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -265,12 +265,12 @@ def display_document():
     if not st.session_state.processed_images:
         return
 
-    st.subheader(f"Editing: {st.session_state.get('doc_name', 'Document')}")
+    # st.subheader(f"Editing: {st.session_state.get('doc_name', 'Document')}")
     display_navigation()
 
     col1, col2 = st.columns([1, 1])
     with col1:
-        st.header("📄 Document Preview")
+        # st.header("📄 Document Preview")
         display_image()
     with col2:
         st.header("✏️ Text Editor")
