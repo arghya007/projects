@@ -110,6 +110,7 @@ def perform_ocr(image, lang='ben'):
 
 # ========== Main UI ==========
 def main_ui():
+    st.write("Current working directory:", os.getcwd())  # Debug line to check working directory
     st.title("📜 Bengali Document OCR System")
     
     # Set background image using base64 encoding
@@ -287,7 +288,7 @@ def display_navigation():
     with cols[1]:
         st.markdown(f"**Page {current_page + 1} of {total_pages}**")
     with cols[2]:
-        if st.button("Next ▶", disabled=current_page >= total_pages - 1):
+        if st.button("Next ▶", disabled=current_page >= total_page - 1):
             st.session_state.current_page = min(total_pages - 1, current_page + 1)
             st.rerun()
 
