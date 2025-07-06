@@ -16,15 +16,6 @@ COLLECTION_NAME = "documents"
 
 # Linux (Streamlit Cloud) configuration
 POPPLER_PATH = "/usr/bin"
-# Debug: Show PATH and /usr/bin contents 
-st.write("Current PATH:", os.environ.get('PATH', ''))
-try:
-    bin_contents = os.listdir('/usr/bin')
-    st.write("Listing /usr/bin contents (first 10 files):", bin_contents[:10])
-    st.write("'pdfinfo' in /usr/bin:", 'pdfinfo' in bin_contents)
-    st.write("'tesseract' in /usr/bin:", 'tesseract' in bin_contents)
-except Exception as e:
-    st.warning(f"Failed to list /usr/bin contents: {str(e)}")
 # Check if tesseract and pdfinfo are in /usr/bin
 tesseract_path = os.path.join('/usr/bin', 'tesseract')
 pdfinfo_path = os.path.join('/usr/bin', 'pdfinfo')
@@ -32,8 +23,6 @@ if not os.path.exists(tesseract_path):
     st.warning(f"Tesseract not found at {tesseract_path}. Ensure 'tesseract-ocr' is in packages.txt")
 if not os.path.exists(pdfinfo_path):
     st.warning(f"pdfinfo not found at {pdfinfo_path}. Ensure 'poppler-utils' is in packages.txt")
-# Warn about inotify limit
-st.warning("If app fails to load, check logs for 'inotify watch limit reached'. Minimize repository files or contact Streamlit support.")
 
 MONGO_URI = st.secrets["MONGO_URI"]
 MAX_FILE_SIZE = 200 * 1024 * 1024  # 200MB limit
@@ -113,6 +102,16 @@ def perform_ocr(image, lang='ben'):
 # ========== Main UI ==========
 def main_ui():
     st.title("📜 Bengali Document OCR System")
+    # Add background image
+    st.markdown("""
+    <style>
+    .stApp {
+        background-image: url("assets/bg.jpg");
+        background-size: cover;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
     st.markdown("""
     **Upload documents, extract Bengali text, and save corrections to the database**
     """)
@@ -238,7 +237,7 @@ def process_file_content(file_bytes, file_type):
         st.session_state.processed_images = images
         st.session_state.extracted_texts = [''] * len(images)
         st.session_state.corrected_texts = [''] * len(images)
-        st.rerun()  # Updated from experimental_rerun to rerun
+        st.rerun()
     except Exception as e:
         handle_error(e, "File processing failed")
 
@@ -268,13 +267,13 @@ def display_navigation():
     with cols[0]:
         if st.button("◀ Previous", disabled=current_page == 0):
             st.session_state.current_page = max(0, current_page - 1)
-            st.rerun()  # Updated from experimental_rerun to rerun
+            st.rerun()
     with cols[1]:
         st.markdown(f"**Page {current_page + 1} of {total_pages}**")
     with cols[2]:
         if st.button("Next ▶", disabled=current_page >= total_pages - 1):
             st.session_state.current_page = min(total_pages - 1, current_page + 1)
-            st.rerun()  # Updated from experimental_rerun to rerun
+            st.rerun()
 
 def display_image():
     try:
@@ -287,7 +286,7 @@ def display_image():
         
         st.image(
             img,
-            use_column_width=True,
+            use_container_width=True,
             caption=f"Page {current_page + 1}"
         )
     except Exception as e:
