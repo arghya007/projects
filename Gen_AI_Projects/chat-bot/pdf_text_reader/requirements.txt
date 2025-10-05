@@ -1,0 +1,13 @@
+langchain
+groq
+langchain_groq
+chainlit
+chromadb
+tiktoken
+PyPDF2
+pypdf
+pandas
+tabulate
+langchain-community
+langchain_google_genai
+google-generativeai
